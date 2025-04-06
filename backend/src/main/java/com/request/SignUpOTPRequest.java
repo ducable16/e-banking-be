@@ -1,13 +1,14 @@
 package com.request;
 
 import com.enums.Role;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+
+@Data
 public class SignUpOTPRequest {
-    private String username;
-    private String password;
     private String email;
+    private String password;
     private String firstName;
     private String lastName;
     private String phoneNumber;

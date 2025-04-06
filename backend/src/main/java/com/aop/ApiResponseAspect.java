@@ -16,6 +16,7 @@ public class ApiResponseAspect {
         Object result = joinPoint.proceed();
 
         if (result instanceof ApiResponse) return result;
+        if(result instanceof String) return ApiResponse.successWithMessage(result);
         return ApiResponse.success(result);
     }
 }

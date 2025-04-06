@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
     @Bean
     public UserDetailsService userDetailsService() {
-        return account -> userRepository.findByUsername(account)
+        return account -> userRepository.findByEmail(account)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

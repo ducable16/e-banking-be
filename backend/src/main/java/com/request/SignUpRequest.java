@@ -1,9 +1,9 @@
 package com.request;
 
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class SignUpRequest {
-    private String username;
     private String email;
 }

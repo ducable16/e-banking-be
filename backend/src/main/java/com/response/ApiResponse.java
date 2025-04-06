@@ -26,6 +26,10 @@ public class ApiResponse<T> {
         this.data = data;
         this.errorCode = errorCode;
     }
+    public static <T> ApiResponse<T> successWithMessage(T data) {
+        return new ApiResponse<>(200, true, data.toString(), null, null);
+    }
+
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(200, true, "OK", data, null);
     }
