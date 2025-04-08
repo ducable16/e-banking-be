@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.io.UnsupportedEncodingException;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -37,11 +35,11 @@ public class GlobalExceptionHandler {
                 .status(ex.getHttpStatus())
                 .body(ApiResponse.error(ErrorCode.INVALID_OTP, ex.getMessage()));
     }
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleUserNotFound(UserNotFoundException ex) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseEntity
                 .status(ex.getHttpStatus())
-                .body(ApiResponse.error(ErrorCode.USER_NOT_FOUND, ex.getMessage()));
+                .body(ApiResponse.error(ErrorCode.ENTITY_NOT_FOUND, ex.getMessage()));
     }
     @ExceptionHandler(WrongPasswordException.class)
     public ResponseEntity<ApiResponse<Object>> handleWrongPassword(WrongPasswordException ex) {

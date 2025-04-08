@@ -2,19 +2,19 @@ package com.service;
 
 import com.config.MailConfig;
 import jakarta.mail.internet.InternetAddress;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-
+@AllArgsConstructor
 @Service
 public class EmailService {
-    @Autowired
-    private MailConfig mailConfig;
-    @Autowired
-    private JavaMailSender mailSender;
+    private final MailConfig mailConfig;
+
+    private final JavaMailSender mailSender;
 
     public void sendEmail(String to, String subject, String text) throws UnsupportedEncodingException {
         SimpleMailMessage message = new SimpleMailMessage();

@@ -1,5 +1,6 @@
 package com.entity;
 
+import com.enums.AccountStatus;
 import com.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,11 +25,11 @@ public class User implements UserDetails {
     @Column(name = "user_id", unique = true, nullable = false)
     private Integer userId;
 
-    @Column(nullable = false)
-    private String password;
-
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(name = "first_name")
     private String firstName;
@@ -39,17 +40,21 @@ public class User implements UserDetails {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "balance")
+    private Long balance;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role = Role.CUSTOMER;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    @Column(name = "status")
+    private AccountStatus status = AccountStatus.ACTIVE;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -78,6 +83,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return Boolean.TRUE.equals(this.isActive);
+        return Boolean.TRUE.equals(this.status == AccountStatus.ACTIVE);
     }
 }

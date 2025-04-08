@@ -1,16 +1,17 @@
 package com.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+@AllArgsConstructor
 @Service
 public class OtpService {
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
     private final Random random = new Random();

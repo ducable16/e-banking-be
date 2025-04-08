@@ -1,46 +1,45 @@
 package com.controller;
 
 import com.entity.User;
-import com.request.LoginRequest;
-import com.request.SignUpOTPRequest;
-import com.request.SignUpRequest;
-import com.request.TokenRefreshRequest;
-import com.response.StatusResponse;
+import com.request.*;
 import com.response.TokenResponse;
 import com.service.*;
+import com.service.impl.AuthServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @RequestMapping("/auth")
 @RestController
+@AllArgsConstructor
 public class AuthController {
-    @Autowired
-    private OtpService otpService;
-    @Autowired
-    private AuthService authService;
+    private final OtpService otpService;
+
+    private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/signup")
     public Object signUp(@RequestBody SignUpRequest request) throws UnsupportedEncodingException {
-        authService.validateNewUser(request);
+        authServiceImpl.validateNewUser(request);
         otpService.generateOtp(request.getEmail(), "Mã xác thực đăng ký.");
         return "Otp was sent to your email";
     }
     @PostMapping("/signup-otp")
     public User signUpOtp(@RequestBody SignUpOTPRequest request) {
-        return authService.register(request);
+        return authServiceImpl.register(request);
     }
 
     @PostMapping("/login")
     public TokenResponse authenticate(@RequestBody LoginRequest request) {
-        return authService.authenticate(request);
+        return authServiceImpl.authenticate(request);
+    }
+
+    @PostMapping("/forget-password")
+    public Object forgetPassword(@RequestBody ForgetPasswordRequest request) {
+        return authServiceImpl.forgetPassword(request);
     }
 }

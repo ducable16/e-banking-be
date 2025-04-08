@@ -1,7 +1,7 @@
 package com.enums;
 
 public enum ErrorCode {
-    USER_NOT_FOUND(404),
+    ENTITY_NOT_FOUND(404),
     INVALID_INPUT(400),
     BAD_REQUEST(400),
     USERNAME_EXISTS(409),

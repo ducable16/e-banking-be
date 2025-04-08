@@ -15,6 +15,10 @@ public class ApiResponseAspect {
     public Object wrapApiResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
+        if (result == null) {
+            return ApiResponse.success("No content");
+        }
+
         if (result instanceof ApiResponse) return result;
         if(result instanceof String) return ApiResponse.successWithMessage(result);
         return ApiResponse.success(result);
