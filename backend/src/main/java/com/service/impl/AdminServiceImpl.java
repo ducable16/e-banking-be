@@ -33,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public User getUserById(Integer userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void changeUserAccountStatus(AccountStatusRequest request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.setStatus(request.getStatus());
         userRepository.save(user);
     }
@@ -69,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Transaction getTransactionById(Integer transactionId) {
         return transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
     }
 
     @Override
@@ -80,12 +80,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public UserSession getUserSessionById(Integer userId) {
         return loginSessionRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("Session not found"));
     }
 
     @Override
     public Boolean topUpBalance(TopUpRequest request) {
-        User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new EntityNotFoundException());
+        User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
         Long currentBalance = user.getBalance() != null ? user.getBalance() : 0L;
         user.setBalance(currentBalance + request.getAmount());
         userRepository.save(user);
@@ -94,7 +94,7 @@ public class AdminServiceImpl implements AdminService {
 
     // Helper method
     private Boolean updateUserStatus(Integer userId, AccountStatus status) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException());
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.setStatus(status);
         userRepository.save(user);
         return true;

@@ -47,5 +47,11 @@ public class GlobalExceptionHandler {
                 .status(ex.getHttpStatus())
                 .body(ApiResponse.error(ErrorCode.WRONG_PASSWORD, ex.getMessage()));
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(ApiResponse.error(ErrorCode.INTERNAL_ERROR, ex.getMessage()));
+    }
 
 }

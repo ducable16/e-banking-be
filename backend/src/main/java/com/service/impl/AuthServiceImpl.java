@@ -57,14 +57,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponse authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new WrongOtpException();
         return jwtService.generateTokenWithUserDetails(user);
     }
 
     @Override
     public String forgetPassword(ForgetPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException());
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new EntityNotFoundException("User not found"));
         if(passwordEncoder.matches(user.getPassword(), user.getPassword())) {
             return "continue...";
         }
