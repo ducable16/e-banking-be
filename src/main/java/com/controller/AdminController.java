@@ -1,12 +1,12 @@
 package com.controller;
 
-import com.model.Transaction;
-import com.model.User;
+import com.entity.Transaction;
+import com.entity.User;
 import com.request.AccountStatusRequest;
 import com.request.TopUpRequest;
 import com.request.TransactionFilterRequest;
-import com.service.base.AdminService;
-import com.service.base.UserService;
+import com.service.AdminService;
+import com.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

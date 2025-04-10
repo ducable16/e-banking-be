@@ -1,6 +1,6 @@
 package com.repository;
 
-import com.model.User;
+import com.entity.User;
 import com.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

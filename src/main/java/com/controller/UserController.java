@@ -1,19 +1,20 @@
 package com.controller;
 
-import com.model.Transaction;
-import com.model.User;
+import com.entity.Transaction;
+import com.entity.User;
 import com.request.ChangePasswordRequest;
 import com.request.TransactionFilterRequest;
 import com.request.TransferRequest;
 import com.request.UserProfileUpdateRequest;
 import com.service.JwtService;
-import com.service.base.UserService;
+import com.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import static com.service.JwtService.*;
+
+import static com.service.JwtService.validation;
 
 @Controller
 @RequestMapping("/user")

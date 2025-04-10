@@ -1,6 +1,6 @@
 package com.response;
 
-import com.model.User;
+import com.entity.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;

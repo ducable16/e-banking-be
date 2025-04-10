@@ -1,8 +1,8 @@
 package com.service;
 
-import com.exception.UnauthorizedException;
-import com.model.User;
+import com.entity.User;
 import com.enums.Role;
+import com.exception.UnauthorizedException;
 import com.response.TokenResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,14 +17,13 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class JwtService {
 
     private static final String SECRET_KEY = "z2Xh9KD5c8sNFd7wQie3Ruty1HdkJ1Kx";
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 20;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 20;
 
     // Generate token
     private static Key getSignKey() {
@@ -64,7 +63,6 @@ public class JwtService {
         }
     }
 
-
     public String extractUsername(String token) {
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
@@ -79,15 +77,15 @@ public class JwtService {
                 .getSubject();
     }
 
-    public static Integer extractUserId(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.get("userId", Integer.class);
-    }
-
-    public static Role extractRole(String token) {
+    public Role extractRole(String token) {
         Claims claims = extractAllClaims(token);
         String roleStr = claims.get("role", String.class);
         return Role.valueOf(roleStr);
+    }
+
+    public static Integer extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId", Integer.class);
     }
 
     public boolean isTokenValid(String token) {
@@ -98,12 +96,8 @@ public class JwtService {
             return false;
         }
     }
-    public static boolean roleValidation(String token, Role role) {
-        return extractRole(token) == role;
-    }
-
     public static void validation(String token, Integer userId) {
-        if(!Objects.equals(extractUserId(token), userId) && extractRole(token) != Role.ADMIN) throw new UnauthorizedException();
+        if(!extractUserId(token).equals(userId)) throw new UnauthorizedException();
     }
 }
 

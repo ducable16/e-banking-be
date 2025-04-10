@@ -3,7 +3,6 @@ package com.service;
 import com.config.MailConfig;
 import jakarta.mail.internet.InternetAddress;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,14 +15,10 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendEmail(String to, String subject, String text) {
+    public void sendEmail(String to, String subject, String text) throws UnsupportedEncodingException {
         SimpleMailMessage message = new SimpleMailMessage();
 
-        try {
-            message.setFrom(String.valueOf(new InternetAddress("toilaatmin@gmail.com", "Át Min")));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        message.setFrom(String.valueOf(new InternetAddress("toilaatmin@gmail.com", "Át Min")));
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);

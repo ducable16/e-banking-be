@@ -1,14 +1,11 @@
 package com.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.model.User;
 import com.request.*;
-import com.response.ApiResponse;
 import com.response.TokenResponse;
 import com.response.UserResponse;
 import com.service.*;
-import com.service.impl.AuthServiceImpl;
+import com.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +20,7 @@ import java.util.Map;
 public class AuthController {
     private final OtpService otpService;
 
-    private final AuthServiceImpl authServiceImpl;
+    private final AuthService authService;
 
     private final ObjectMapper objectMapper;
 
@@ -36,22 +33,22 @@ public class AuthController {
 
     @PostMapping("/signup")
     public Object signUp(@RequestBody SignUpRequest request) throws UnsupportedEncodingException {
-        authServiceImpl.validateNewUser(request);
+        authService.validateNewUser(request);
         otpService.generateOtp(request.getEmail(), "Mã xác thực đăng ký.");
         return "Otp was sent to your email";
     }
     @PostMapping("/signup-otp")
-    public UserResponse signUpOtp(@RequestBody SignUpOTPRequest request) {
-        return authServiceImpl.register(request);
+    public Object signUpOtp(@RequestBody SignUpOTPRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/login")
-    public TokenResponse authenticate(@RequestBody LoginRequest request) {
-        return authServiceImpl.authenticate(request);
+    public Object authenticate(@RequestBody LoginRequest request) {
+        return authService.authenticate(request);
     }
 
     @PostMapping("/forget-password")
     public Object forgetPassword(@RequestBody ForgetPasswordRequest request) {
-        return authServiceImpl.forgetPassword(request);
+        return authService.forgetPassword(request);
     }
 }

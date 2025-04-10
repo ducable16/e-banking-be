@@ -5,6 +5,7 @@ import com.response.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -12,10 +13,14 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ApiResponseAspect {
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ApiResponseAspect.class);
+
     @Around("execution(* com.controller..*(..))")
     public Object wrapApiResponse(ProceedingJoinPoint joinPoint) {
         try {
             Object result = joinPoint.proceed();
+
+//            logger.info("Result from controller: {}", result);
 
             if (result == null) {
                 return ApiResponse.success("No content");
@@ -23,11 +28,14 @@ public class ApiResponseAspect {
 
             if (result instanceof ApiResponse) return result;
             if (result instanceof String) return ApiResponse.successWithMessage(result);
-
-            System.out.println("Result class: " + result.getClass().getName());
+            ApiResponse<?> wrapped = ApiResponse.success(result);
+//            logger.info("Wrapped response: {}", wrapped);
             return ApiResponse.success(result);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Exception in controller method: {}.{}",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), e);
+            e.printStackTrace(); // <--- THÊM DÒNG NÀY
             return ApiResponse.error(ErrorCode.INTERNAL_ERROR, "INTERNAL_ERROR");
         }
     }
