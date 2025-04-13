@@ -10,8 +10,7 @@ public class UserResponse {
     private Integer userId;
     private String account;
     private String email;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String phoneNumber;
     private String address;
     private Long balance;
@@ -23,8 +22,7 @@ public class UserResponse {
         this.userId = user.getUserId();
         this.account = user.getAccount();
         this.email = user.getEmail();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
+        this.fullName = user.getFullName();
         this.phoneNumber = user.getPhoneNumber();
         this.address = user.getAddress();
         this.balance = user.getBalance();

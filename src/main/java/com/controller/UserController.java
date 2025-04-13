@@ -25,9 +25,9 @@ public class UserController {
 
     private final JwtService jwtService;
 
-    @GetMapping("/profile/{userId}")
-    public User getProfile(@PathVariable Integer userId, @RequestHeader String token) {
-        validation(token, userId);
+    @GetMapping("/profile")
+    public User getProfile(@RequestHeader String token) {
+        Integer userId = JwtService.extractUserId(token);
         return userService.getProfile(userId);
     }
 

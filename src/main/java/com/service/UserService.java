@@ -28,6 +28,10 @@ public class UserService {
     private final TransactionRepository transactionRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public Integer extractUserId(String token) {
+        return JwtService.extractUserId(token);
+    }
+
     public User getProfile(Integer userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -44,8 +48,7 @@ public class UserService {
 
     public Boolean updateProfile(UserProfileUpdateRequest request) {
         User user = getProfile(request.getUserId());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
         userRepository.save(user);

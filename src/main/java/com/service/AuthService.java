@@ -38,14 +38,13 @@ public class AuthService {
         }
     }
     public UserResponse register(SignUpOTPRequest request) {
-//        if(!otpService.validateOtp(request.getEmail(), request.getOtp())) {
-//            throw new WrongOtpException();
-//        }
+        if(!otpService.validateOtp(request.getEmail(), request.getOtp())) {
+            throw new WrongOtpException();
+        }
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .fullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
                 .address(request.getAddress())
                 .balance(0L)

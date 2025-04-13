@@ -58,5 +58,11 @@ public class GlobalExceptionHandler {
                 .status(ex.getHttpStatus())
                 .body(ApiResponse.error(ErrorCode.INTERNAL_ERROR, ex.getMessage()));
     }
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEmailExists(EmailExistsException ex) {
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(ApiResponse.error(ErrorCode.EMAIL_EXISTS, ex.getMessage()));
+    }
 
 }
