@@ -10,6 +10,7 @@ import com.request.ChangePasswordRequest;
 import com.request.TransactionFilterRequest;
 import com.request.TransferRequest;
 import com.request.UserProfileUpdateRequest;
+import com.response.UserAccountCheckResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -99,5 +100,13 @@ public class UserService {
 
     public List<Transaction> getTransactionsByUserId(Integer userId) {
         return transactionRepository.findByUserInvolved(userId);
+    }
+
+    public UserAccountCheckResponse getNameByAccount(String account) {
+        User user = userRepository.findByAccount(account).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserAccountCheckResponse response = new UserAccountCheckResponse();
+        response.setUserId(user.getUserId());
+        response.setFullName(user.getFullName());
+        return response;
     }
 }

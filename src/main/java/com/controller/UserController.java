@@ -61,5 +61,9 @@ public class UserController {
         validation(token, userId);
         return userService.getBalance(userId);
     }
+    @GetMapping("/name")
+    public ResponseEntity<?> getNameByAccount(@RequestParam("account") String accountNumber) {
+        return ResponseEntity.ok(userService.getNameByAccount(accountNumber));
+    }
 }
 

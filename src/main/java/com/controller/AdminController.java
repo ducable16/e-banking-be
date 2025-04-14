@@ -8,6 +8,7 @@ import com.request.TransactionFilterRequest;
 import com.service.AdminService;
 import com.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,8 +73,8 @@ public class AdminController {
     }
 
     @PostMapping("/users/topup")
-    public Boolean topUpUser(@RequestBody TopUpRequest request) {
-        return adminService.topUpBalance(request);
+    public ResponseEntity<?> topUpUser(@RequestBody TopUpRequest request) {
+        return ResponseEntity.ok(adminService.topUpBalance(request));
     }
 
 }
