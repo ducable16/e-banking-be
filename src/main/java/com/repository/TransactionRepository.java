@@ -20,4 +20,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.receiver.userId = :userId AND MONTH(t.createdAt) = :month AND YEAR(t.createdAt) = :year")
     Long getTotalReceivedByUserInMonth(@Param("userId") Integer userId, @Param("month") int month, @Param("year") int year);
 
+    @Query(value = """
+    SELECT 
+        DATE_TRUNC('month', t.created_at) AS month,
+        SUM(CASE WHEN t.sender_id = :userId THEN t.amount ELSE 0 END) AS total_sent,
+        SUM(CASE WHEN t.receiver_id = :userId THEN t.amount ELSE 0 END) AS total_received
+    FROM transactions t
+    WHERE 
+        (t.sender_id = :userId OR t.receiver_id = :userId)
+        AND t.created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '4 months'
+    GROUP BY month
+    ORDER BY month ASC
+    """, nativeQuery = true)
+    List<Object[]> getMonthlyStatsLast5Months(@Param("userId") Integer userId);
+
 }

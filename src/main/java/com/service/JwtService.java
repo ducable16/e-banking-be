@@ -23,7 +23,7 @@ public class JwtService {
 
     private static final String SECRET_KEY = "z2Xh9KD5c8sNFd7wQie3Ruty1HdkJ1Kx";
 
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 20;
+    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 30;
 
     // Generate token
     private static Key getSignKey() {

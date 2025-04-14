@@ -4,7 +4,10 @@ import com.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,6 +24,20 @@ public class TransactionService {
         result.put("totalSent", totalSent);
         result.put("totalReceived", totalReceived);
         return result;
+    }
+
+    public List<Map<String, Object>> getLast5MonthsSummary(Integer userId) {
+        List<Object[]> results = transactionRepository.getMonthlyStatsLast5Months(userId);
+
+        List<Map<String, Object>> summary = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("month", ((Timestamp) row[0]).toLocalDateTime().toLocalDate().withDayOfMonth(1));
+            map.put("totalSent", row[1]);
+            map.put("totalReceived", row[2]);
+            summary.add(map);
+        }
+        return summary;
     }
 }
 

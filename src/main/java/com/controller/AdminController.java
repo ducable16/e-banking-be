@@ -71,7 +71,6 @@ public class AdminController {
         return userService.getTransactionsByUserId(userId);
     }
 
-
     @PostMapping("/users/topup")
     public Boolean topUpUser(@RequestBody TopUpRequest request) {
         return adminService.topUpBalance(request);

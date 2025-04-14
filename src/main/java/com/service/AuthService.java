@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @AllArgsConstructor
 @Service
@@ -31,6 +32,9 @@ public class AuthService {
 
     private final JwtService jwtService;
 
+    private static final int ACCOUNT_LENGTH = 10;
+    private static final String DIGITS = "0123456789";
+
 
     public void validateNewUser(SignUpRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -43,6 +47,7 @@ public class AuthService {
         }
         User user = User.builder()
                 .email(request.getEmail())
+                .account(generateUniqueAccountNumber())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
@@ -69,5 +74,24 @@ public class AuthService {
             return "continue...";
         }
         else return "continue...";
+    }
+
+    public String generateUniqueAccountNumber() {
+        String accountNumber;
+        Random random = new Random();
+
+        do {
+            accountNumber = generateRandomDigits(random);
+        } while (userRepository.existsByAccount(accountNumber));
+
+        return accountNumber;
+    }
+
+    private String generateRandomDigits(Random random) {
+        StringBuilder sb = new StringBuilder(ACCOUNT_LENGTH);
+        for (int i = 0; i < ACCOUNT_LENGTH; i++) {
+            sb.append(DIGITS.charAt(random.nextInt(DIGITS.length())));
+        }
+        return sb.toString();
     }
 }

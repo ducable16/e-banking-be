@@ -6,9 +6,11 @@ import com.request.ChangePasswordRequest;
 import com.request.TransactionFilterRequest;
 import com.request.TransferRequest;
 import com.request.UserProfileUpdateRequest;
+import com.response.ApiResponse;
 import com.service.JwtService;
 import com.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +28,9 @@ public class UserController {
     private final JwtService jwtService;
 
     @GetMapping("/profile")
-    public User getProfile(@RequestHeader String token) {
+    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String token) {
         Integer userId = JwtService.extractUserId(token);
-        return userService.getProfile(userId);
+        return ResponseEntity.ok(userService.getProfile(userId));
     }
 
     @PostMapping("/change-password")
@@ -37,13 +39,13 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public Boolean updateProfile(@RequestBody UserProfileUpdateRequest request, @RequestHeader String token) {
+    public Boolean updateProfile(@RequestBody UserProfileUpdateRequest request, @RequestHeader("Authorization") String token) {
         validation(token, request.getUserId());
         return userService.updateProfile(request);
     }
 
     @PostMapping("/transfer")
-    public Boolean transferMoney(@RequestBody TransferRequest request, @RequestHeader String token) {
+    public Boolean transferMoney(@RequestBody TransferRequest request, @RequestHeader("Authorization") String token) {
         validation(token, request.getSenderId());
         return userService.transferMoney(request);
     }
@@ -55,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/balance/{userId}")
-    public Long getBalance(@PathVariable Integer userId, @RequestHeader String token) {
+    public Long getBalance(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         validation(token, userId);
         return userService.getBalance(userId);
     }
