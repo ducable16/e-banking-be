@@ -34,32 +34,33 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public Boolean changePassword(@RequestBody ChangePasswordRequest request) {
-        return userService.changePassword(request);
+    public ResponseEntity<Boolean> changePassword(@RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(userService.changePassword(request));
     }
 
     @PutMapping("/profile")
-    public Boolean updateProfile(@RequestBody UserProfileUpdateRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Boolean> updateProfile(@RequestBody UserProfileUpdateRequest request, @RequestHeader("Authorization") String token) {
         validation(token, request.getUserId());
-        return userService.updateProfile(request);
+        return ResponseEntity.ok(userService.updateProfile(request));
     }
 
     @PostMapping("/transfer")
-    public Boolean transferMoney(@RequestBody TransferRequest request, @RequestHeader("Authorization") String token) {
-        validation(token, request.getSenderId());
-        return userService.transferMoney(request);
+    public ResponseEntity<Boolean> transferMoney(@RequestBody TransferRequest request, @RequestHeader("Authorization") String token) {
+        User sender = userService.getProfileByAccount(request.getFromAccount());
+        validation(token, sender.getUserId());
+        return ResponseEntity.ok(userService.transferMoney(request));
     }
 
     @GetMapping("/transactions")
-    public List<Transaction> getTransactionHistory(@RequestBody TransactionFilterRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Transaction>> getTransactionHistory(@RequestBody TransactionFilterRequest request, @RequestHeader("Authorization") String token) {
         validation(token, request.getUserId());
-        return userService.getTransactionHistory(request);
+        return ResponseEntity.ok(userService.getTransactionHistory(request));
     }
 
     @GetMapping("/balance/{userId}")
-    public Long getBalance(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Long> getBalance(@PathVariable Integer userId, @RequestHeader("Authorization") String token) {
         validation(token, userId);
-        return userService.getBalance(userId);
+        return ResponseEntity.ok(userService.getBalance(userId));
     }
     @GetMapping("/name")
     public ResponseEntity<?> getNameByAccount(@RequestParam("account") String accountNumber) {

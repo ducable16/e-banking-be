@@ -3,9 +3,11 @@ package com.controller;
 import com.entity.Transaction;
 import com.entity.User;
 import com.request.AccountStatusRequest;
+import com.request.FakeBillRequest;
 import com.request.TopUpRequest;
 import com.request.TransactionFilterRequest;
 import com.service.AdminService;
+import com.service.TransactionService;
 import com.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +25,21 @@ public class AdminController {
 
     private final UserService userService;
 
+    private final TransactionService transactionService;
+
     @PostMapping("/status")
     public void changeUserAccountStatus(@RequestBody AccountStatusRequest request) {
         adminService.changeUserAccountStatus(request);
     }
 
     @GetMapping("/all-users")
-    public List<User> getUsers() {
-        return adminService.getUsers();
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(adminService.getUsers());
     }
 
     @GetMapping("/users/{userId}")
-    public User getUserById(@PathVariable Integer userId) {
-        return adminService.getUserById(userId);
+    public ResponseEntity<?> getUserById(@PathVariable Integer userId) {
+        return ResponseEntity.ok(adminService.getUserById(userId));
     }
 
     @PutMapping("/users/{userId}/block")
@@ -49,13 +53,13 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{userId}")
-    public Boolean deleteUser(@PathVariable Integer userId) {
-        return adminService.deleteUser(userId);
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(adminService.deleteUser(userId));
     }
 
     @GetMapping("/all-transactions")
-    public List<Transaction> getTransactions() {
-        return adminService.getTransactions();
+    public ResponseEntity<List<Transaction>> getTransactions() {
+        return ResponseEntity.ok(adminService.getTransactions());
     }
 
     @GetMapping("/transactions/{transactionId}")
@@ -63,18 +67,23 @@ public class AdminController {
         return adminService.getTransactionById(transactionId);
     }
     @GetMapping("/transactions")
-    public List<Transaction> getTransactionHistory(@RequestBody TransactionFilterRequest request) {
-        return userService.getTransactionHistory(request);
+    public ResponseEntity<List<Transaction>> getTransactionHistory(@RequestBody TransactionFilterRequest request) {
+        return ResponseEntity.ok(userService.getTransactionHistory(request));
     }
 
     @GetMapping("/transactions/{userId}")
-    public List<Transaction> getTransactionByUserId(@PathVariable Integer userId) {
-        return userService.getTransactionsByUserId(userId);
+    public ResponseEntity<List<Transaction>> getTransactionByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(userService.getTransactionsByUserId(userId));
     }
 
     @PostMapping("/users/topup")
     public ResponseEntity<?> topUpUser(@RequestBody TopUpRequest request) {
         return ResponseEntity.ok(adminService.topUpBalance(request));
+    }
+    @PostMapping("/bill")
+    public ResponseEntity<Transaction> createFakeBill(@RequestBody FakeBillRequest request) {
+        Transaction transaction = transactionService.createFakeTransaction(request);
+        return ResponseEntity.ok(transaction);
     }
 
 }

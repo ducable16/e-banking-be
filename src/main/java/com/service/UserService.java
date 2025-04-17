@@ -37,6 +37,9 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
+    public User getProfileByAccount(String account) {
+        return userRepository.findByAccount(account).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
 
     public Boolean changePassword(ChangePasswordRequest request) {
         User user = getProfile(request.getUserId());
@@ -61,8 +64,8 @@ public class UserService {
         Long amount = request.getAmount();
         if (request.getAmount() <= 0) throw new IllegalArgumentException("Amount must be greater than 0");
 
-        User sender = getProfile(request.getSenderId());
-        User receiver = getProfile(request.getReceiverId());
+        User sender = getProfileByAccount(request.getFromAccount());
+        User receiver = getProfileByAccount(request.getToAccount());
 
         if (sender.getBalance() < amount) return false;
 
