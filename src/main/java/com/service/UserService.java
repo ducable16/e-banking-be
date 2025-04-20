@@ -10,6 +10,7 @@ import com.request.ChangePasswordRequest;
 import com.request.TransactionFilterRequest;
 import com.request.TransferRequest;
 import com.request.UserProfileUpdateRequest;
+import com.response.NameResponse;
 import com.response.UserAccountCheckResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -109,6 +110,12 @@ public class UserService {
         User user = userRepository.findByAccount(account).orElseThrow(() -> new EntityNotFoundException("User not found"));
         UserAccountCheckResponse response = new UserAccountCheckResponse();
         response.setUserId(user.getUserId());
+        response.setFullName(user.getFullName());
+        return response;
+    }
+    public NameResponse getNameById(Integer userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        NameResponse response = new NameResponse();
         response.setFullName(user.getFullName());
         return response;
     }

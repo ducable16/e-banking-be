@@ -11,6 +11,7 @@ import com.service.TransactionService;
 import com.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +67,7 @@ public class AdminController {
     public Transaction getTransactionById(@PathVariable Integer transactionId) {
         return adminService.getTransactionById(transactionId);
     }
-    @GetMapping("/transactions")
+    @PostMapping("/transactions")
     public ResponseEntity<List<Transaction>> getTransactionHistory(@RequestBody TransactionFilterRequest request) {
         return ResponseEntity.ok(userService.getTransactionHistory(request));
     }

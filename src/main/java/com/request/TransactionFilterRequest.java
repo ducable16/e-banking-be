@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class TransactionFilterRequest {
+
     private Integer userId;
 
     private LocalDate startDate;

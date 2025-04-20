@@ -28,10 +28,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     FROM transactions t
     WHERE 
         (t.sender_id = :userId OR t.receiver_id = :userId)
-        AND t.created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '4 months'
+        AND t.created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '11 months'
     GROUP BY month
     ORDER BY month ASC
     """, nativeQuery = true)
-    List<Object[]> getMonthlyStatsLast5Months(@Param("userId") Integer userId);
+    List<Object[]> getMonthlyStatsLast12Months(@Param("userId") Integer userId);
 
 }

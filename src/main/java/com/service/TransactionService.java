@@ -33,8 +33,8 @@ public class TransactionService {
         return result;
     }
 
-    public List<Map<String, Object>> getLast5MonthsSummary(Integer userId) {
-        List<Object[]> results = transactionRepository.getMonthlyStatsLast5Months(userId);
+    public List<Map<String, Object>> getLast12MonthsSummary(Integer userId) {
+        List<Object[]> results = transactionRepository.getMonthlyStatsLast12Months(userId);
 
         List<Map<String, Object>> summary = new ArrayList<>();
         for (Object[] row : results) {

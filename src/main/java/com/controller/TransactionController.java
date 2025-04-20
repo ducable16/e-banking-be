@@ -35,11 +35,10 @@ public class TransactionController {
         return ResponseEntity.ok(summary);
     }
 
-    @GetMapping("/summary/last-5-months")
-    public ResponseEntity<List<Map<String, Object>>> getLast5MonthsSummary(@RequestHeader("Authorization") String token) {
+    @GetMapping("/summary/last-12-months")
+    public ResponseEntity<List<Map<String, Object>>> getLast12MonthsSummary(@RequestHeader("Authorization") String token) {
         Integer userId = JwtService.extractUserId(token);
-        System.out.println(userId);
-        List<Map<String, Object>> summary = transactionService.getLast5MonthsSummary(userId);
+        List<Map<String, Object>> summary = transactionService.getLast12MonthsSummary(userId);
         return ResponseEntity.ok(summary);
     }
     @PostMapping("/send-otp")

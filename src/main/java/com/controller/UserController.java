@@ -51,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(userService.transferMoney(request));
     }
 
-    @GetMapping("/transactions")
+    @PostMapping("/transactions")
     public ResponseEntity<List<Transaction>> getTransactionHistory(@RequestBody TransactionFilterRequest request, @RequestHeader("Authorization") String token) {
         validation(token, request.getUserId());
         return ResponseEntity.ok(userService.getTransactionHistory(request));
@@ -65,6 +65,10 @@ public class UserController {
     @GetMapping("/name")
     public ResponseEntity<?> getNameByAccount(@RequestParam("account") String accountNumber) {
         return ResponseEntity.ok(userService.getNameByAccount(accountNumber));
+    }
+    @GetMapping("/name-by-id")
+    public ResponseEntity<?> getNameById(@RequestParam("userId") String userId) {
+        return ResponseEntity.ok(userService.getNameByAccount(userId));
     }
 }
 
