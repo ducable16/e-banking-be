@@ -6,6 +6,7 @@ import com.enums.Role;
 import com.exception.EmailExistsException;
 import com.exception.EntityNotFoundException;
 import com.exception.WrongOtpException;
+import com.exception.WrongPasswordException;
 import com.repository.UserRepository;
 import com.request.ForgetPasswordRequest;
 import com.request.LoginRequest;
@@ -64,7 +65,7 @@ public class AuthService {
     public TokenResponse authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new WrongOtpException();
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new WrongPasswordException();
         return jwtService.generateTokenWithUserDetails(user);
     }
 

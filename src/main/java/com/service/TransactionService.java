@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -75,6 +76,12 @@ public class TransactionService {
         int minute = random.nextInt(60);
         int second = random.nextInt(60);
         return date.atTime(hour, minute, second);
+    }
+
+    public List<Transaction> getTransactionsByDateRange(LocalDate start, LocalDate end) {
+        LocalDateTime startDate = start.atStartOfDay(); // 00:00:00
+        LocalDateTime endDate = end.atTime(LocalTime.MAX);
+        return transactionRepository.findAllByCreatedAtBetween(startDate, endDate);
     }
 
 }

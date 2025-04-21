@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -33,5 +34,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     ORDER BY month ASC
     """, nativeQuery = true)
     List<Object[]> getMonthlyStatsLast12Months(@Param("userId") Integer userId);
+
+    @Query("""
+        SELECT t FROM Transaction t
+        WHERE t.createdAt BETWEEN :startDate AND :endDate
+        ORDER BY t.createdAt DESC
+    """)
+    List<Transaction> findAllByCreatedAtBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 
 }

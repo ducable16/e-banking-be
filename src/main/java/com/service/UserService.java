@@ -51,11 +51,18 @@ public class UserService {
         return true;
     }
 
+    public void deleteUserById(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        userRepository.deleteById(userId);
+    }
+
     public Boolean updateProfile(UserProfileUpdateRequest request) {
         User user = getProfile(request.getUserId());
-        user.setFullName(request.getFullName());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setAddress(request.getAddress());
+        if(request.getFullName() != null) user.setFullName(request.getFullName());
+        if(request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+        if(request.getAddress() != null) user.setAddress(request.getAddress());
+        if(request.getEmail() != null) user.setEmail(request.getEmail());
+        if(request.getRole() != null) user.setRole(request.getRole());
         userRepository.save(user);
         return true;
     }

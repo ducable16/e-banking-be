@@ -44,6 +44,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateProfile(request));
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable("userId") Integer userId) {
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok(ApiResponse.success("Xóa người dùng thành công"));
+    }
+
     @PostMapping("/transfer")
     public ResponseEntity<Boolean> transferMoney(@RequestBody TransferRequest request, @RequestHeader("Authorization") String token) {
         User sender = userService.getProfileByAccount(request.getFromAccount());

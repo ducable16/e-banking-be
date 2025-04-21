@@ -2,22 +2,20 @@ package com.controller;
 
 import com.entity.Transaction;
 import com.entity.User;
-import com.request.AccountStatusRequest;
-import com.request.FakeBillRequest;
-import com.request.TopUpRequest;
-import com.request.TransactionFilterRequest;
+import com.request.*;
 import com.service.AdminService;
 import com.service.TransactionService;
 import com.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+import static com.service.JwtService.validation;
+
+@RestController
 @AllArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
@@ -27,6 +25,7 @@ public class AdminController {
     private final UserService userService;
 
     private final TransactionService transactionService;
+
 
     @PostMapping("/status")
     public void changeUserAccountStatus(@RequestBody AccountStatusRequest request) {
@@ -38,22 +37,31 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getUsers());
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Integer userId) {
         return ResponseEntity.ok(adminService.getUserById(userId));
     }
-
-    @PutMapping("/users/{userId}/block")
-    public void blockUser(@PathVariable Integer userId) {
-        adminService.blockUser(userId);
+    @PutMapping("/user-profile")
+    public ResponseEntity<Boolean> updateProfile(@RequestBody UserProfileUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateProfile(request));
     }
 
-    @PutMapping("/users/{userId}/unblock")
-    public void unblockUser(@PathVariable Integer userId) {
-        adminService.unblockUser(userId);
+    @PostMapping("/add-user")
+    public Object addUser(@RequestBody AddUserRequest request) {
+        return adminService.addUser(request);
     }
 
-    @DeleteMapping("/users/{userId}")
+    @PutMapping("/user/lock/{userId}")
+    public void lockUser(@PathVariable Integer userId) {
+        adminService.lockUser(userId);
+    }
+
+    @PutMapping("/user/unlock/{userId}")
+    public void unlockUser(@PathVariable Integer userId) {
+        adminService.unlockUser(userId);
+    }
+
+    @DeleteMapping("/user/{userId}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(adminService.deleteUser(userId));
     }
@@ -77,7 +85,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.getTransactionsByUserId(userId));
     }
 
-    @PostMapping("/users/topup")
+    @PostMapping("/user/topup")
     public ResponseEntity<?> topUpUser(@RequestBody TopUpRequest request) {
         return ResponseEntity.ok(adminService.topUpBalance(request));
     }
@@ -85,6 +93,16 @@ public class AdminController {
     public ResponseEntity<Transaction> createFakeBill(@RequestBody FakeBillRequest request) {
         Transaction transaction = transactionService.createFakeTransaction(request);
         return ResponseEntity.ok(transaction);
+    }
+    @PostMapping("/transactions/filter")
+    public ResponseEntity<?> getTransactionsInRange(@RequestBody TransactionFilterRequest request) {
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            return ResponseEntity.badRequest().body("startDate và endDate không được để trống");
+        }
+        List<Transaction> transactions = transactionService.getTransactionsByDateRange(
+                request.getStartDate(), request.getEndDate()
+        );
+        return ResponseEntity.ok(transactions);
     }
 
 }
