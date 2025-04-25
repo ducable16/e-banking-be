@@ -8,17 +8,18 @@ import com.exception.EntityNotFoundException;
 import com.exception.WrongOtpException;
 import com.repository.TransactionRepository;
 import com.repository.UserRepository;
-import com.request.AccountStatusRequest;
-import com.request.AddUserRequest;
-import com.request.SignUpOTPRequest;
-import com.request.TopUpRequest;
+import com.request.*;
 import com.response.UserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+
+import static com.request.AdminTransferFilterRequest.KeywordType.EMAIL;
+import static com.request.AdminTransferFilterRequest.SearchType.*;
 
 @Service
 @AllArgsConstructor
@@ -101,5 +102,62 @@ public class AdminService {
         user.setStatus(status);
         userRepository.save(user);
         return true;
+    }
+
+    public List<Transaction> filterTransactions(AdminTransferFilterRequest request) {
+        // Chuyển LocalDate → LocalDateTime
+        LocalDateTime start = request.getStartDate() != null
+                ? request.getStartDate().atStartOfDay()
+                : LocalDateTime.MIN;
+        LocalDateTime end = request.getEndDate() != null
+                ? request.getEndDate().atTime(LocalTime.MAX)
+                : LocalDateTime.MAX;
+
+        String keyword = request.getKeyword() != null ? request.getKeyword().trim() : "";
+        AdminTransferFilterRequest.SearchType searchType = request.getSearchType();
+        AdminTransferFilterRequest.KeywordType keywordType = request.getKeywordType();
+
+        // Nếu không có keyword → lấy toàn bộ trong khoảng thời gian
+        if (keyword.isBlank()) {
+            return transactionRepository.findAllByCreatedAtBetween(start, end);
+        }
+
+        switch (searchType) {
+            case ALL:
+                if (keywordType == AdminTransferFilterRequest.KeywordType.EMAIL) {
+                    return transactionRepository.findBySenderOrReceiverEmailContainingAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                } else {
+                    return transactionRepository.findBySenderOrReceiverAccountContainingAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                }
+
+            case SENDER:
+                if (keywordType == AdminTransferFilterRequest.KeywordType.EMAIL) {
+                    return transactionRepository.findBySender_EmailContainingIgnoreCaseAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                } else {
+                    return transactionRepository.findBySender_AccountContainingAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                }
+
+            case RECEIVER:
+                if (keywordType == AdminTransferFilterRequest.KeywordType.EMAIL) {
+                    return transactionRepository.findByReceiver_EmailContainingIgnoreCaseAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                } else {
+                    return transactionRepository.findByReceiver_AccountContainingAndCreatedAtBetween(
+                            keyword, start, end
+                    );
+                }
+
+            default:
+                return List.of(); // fallback nếu không khớp
+        }
     }
 }

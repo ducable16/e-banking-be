@@ -45,4 +45,42 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("endDate") LocalDateTime endDate
     );
 
+    List<Transaction> findBySender_EmailContainingIgnoreCaseAndCreatedAtBetween(
+            String email, LocalDateTime start, LocalDateTime end
+    );
+
+    List<Transaction> findBySender_AccountContainingAndCreatedAtBetween(
+            String account, LocalDateTime start, LocalDateTime end
+    );
+    List<Transaction> findByReceiver_EmailContainingIgnoreCaseAndCreatedAtBetween(
+            String email, LocalDateTime start, LocalDateTime end
+    );
+    List<Transaction> findByReceiver_AccountContainingAndCreatedAtBetween(
+            String account, LocalDateTime start, LocalDateTime end
+    );
+    @Query("""
+    SELECT t FROM Transaction t
+    WHERE 
+        (t.sender.account LIKE %:keyword% OR t.receiver.account LIKE %:keyword%)
+        AND t.createdAt BETWEEN :startDate AND :endDate
+    ORDER BY t.createdAt DESC
+""")
+    List<Transaction> findBySenderOrReceiverAccountContainingAndCreatedAtBetween(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime start,
+            @Param("endDate") LocalDateTime end
+    );
+    @Query("""
+    SELECT t FROM Transaction t
+    WHERE 
+        (LOWER(t.sender.email) LIKE LOWER(CONCAT('%', :keyword, '%')) 
+        OR LOWER(t.receiver.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        AND t.createdAt BETWEEN :startDate AND :endDate
+    ORDER BY t.createdAt DESC
+""")
+    List<Transaction> findBySenderOrReceiverEmailContainingAndCreatedAtBetween(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime start,
+            @Param("endDate") LocalDateTime end
+    );
 }
