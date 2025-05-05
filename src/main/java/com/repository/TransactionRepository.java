@@ -83,4 +83,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("startDate") LocalDateTime start,
             @Param("endDate") LocalDateTime end
     );
+
+    List<Transaction> findTop10ByOrderByCreatedAtDesc();
 }

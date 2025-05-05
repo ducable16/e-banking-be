@@ -54,6 +54,7 @@ public class User implements UserDetails {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.ACTIVE;
 
     @Override

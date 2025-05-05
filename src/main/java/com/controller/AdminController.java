@@ -3,6 +3,7 @@ package com.controller;
 import com.entity.Transaction;
 import com.entity.User;
 import com.request.*;
+import com.response.ApiResponse;
 import com.service.AdminService;
 import com.service.TransactionService;
 import com.service.UserService;
@@ -94,19 +95,18 @@ public class AdminController {
         Transaction transaction = transactionService.createFakeTransaction(request);
         return ResponseEntity.ok(transaction);
     }
-//    @PostMapping("/transactions/filter")
-//    public ResponseEntity<?> getTransactionsInRange(@RequestBody TransactionFilterRequest request) {
-//        if (request.getStartDate() == null || request.getEndDate() == null) {
-//            return ResponseEntity.badRequest().body("startDate và endDate không được để trống");
-//        }
-//        List<Transaction> transactions = transactionService.getTransactionsByDateRange(
-//                request.getStartDate(), request.getEndDate()
-//        );
-//        return ResponseEntity.ok(transactions);
-//    }
+
     @PostMapping("/transaction/filter")
     public ResponseEntity<?> filterTransactions(@RequestBody AdminTransferFilterRequest request) {
         List<Transaction> result = adminService.filterTransactions(request);
         return ResponseEntity.ok(result);
+    }
+    @GetMapping("/dashboard-stats")
+    public ResponseEntity<?> getDashboardStats() {
+        return ResponseEntity.ok(ApiResponse.success(adminService.getDashboardStats()));
+    }
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody AdminChangePasswordRequest request) {
+        return ResponseEntity.ok(adminService.adminChangePassword(request));
     }
 }

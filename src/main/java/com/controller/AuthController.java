@@ -22,8 +22,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final ObjectMapper objectMapper;
-
     @GetMapping("/test")
     public Map<String, Object> debug() {
         Map<String, Object> res = new HashMap<>();
@@ -47,8 +45,13 @@ public class AuthController {
         return authService.authenticate(request);
     }
 
-    @PostMapping("/forget-password")
+    @PostMapping("/forgot-password")
     public Object forgetPassword(@RequestBody ForgetPasswordRequest request) {
         return authService.forgetPassword(request);
+    }
+    @PostMapping("/reset-password")
+    public Object resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return "Reset password sent to your email";
     }
 }

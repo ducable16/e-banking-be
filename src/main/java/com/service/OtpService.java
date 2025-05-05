@@ -29,6 +29,19 @@ public class OtpService {
         return otp;
     }
 
+    public void generateForgetPasswordOtp(String email, String subject) throws UnsupportedEncodingException {
+        String otp = String.format("%06d", random.nextInt(999999));
+        otpStorage.put(email, otp);
+
+        emailService.sendEmail(email, subject, "Mã OTP để xác minh yêu cầu đặt lại mật khẩu của bạn là: " + otp + ". Mã này có hiệu lực trong 5 phút.");
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                otpStorage.remove(email);
+            }
+        }, 5 * 60 * 1000);
+    }
+
     public boolean validateOtp(String email, String otp) {
         String storedOtp = otpStorage.get(email);
         return storedOtp != null && storedOtp.equals(otp);

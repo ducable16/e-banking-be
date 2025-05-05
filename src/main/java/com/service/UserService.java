@@ -4,6 +4,7 @@ import com.entity.Transaction;
 import com.entity.User;
 import com.exception.EntityNotFoundException;
 import com.exception.IllegalArgumentException;
+import com.exception.WrongPasswordException;
 import com.repository.TransactionRepository;
 import com.repository.UserRepository;
 import com.request.ChangePasswordRequest;
@@ -29,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     public Integer extractUserId(String token) {
         return JwtService.extractUserId(token);
@@ -44,7 +46,7 @@ public class UserService {
 
     public Boolean changePassword(ChangePasswordRequest request) {
         User user = getProfile(request.getUserId());
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) return false;
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new WrongPasswordException();
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
@@ -81,6 +83,10 @@ public class UserService {
         receiver.setBalance(receiver.getBalance() + amount);
 
         userRepository.saveAll(List.of(sender, receiver));
+
+
+        notificationService.balanceChangingNotification(sender.getEmail(), request.getAmount(), sender.getAccount(), request.getNote(), sender.getBalance(), true);
+        notificationService.balanceChangingNotification(receiver.getEmail(), request.getAmount(), receiver.getAccount(), request.getNote(), receiver.getBalance(), false);
 
         Transaction tx = new Transaction();
         tx.setSender(sender);
